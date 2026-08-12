@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="1.0">
+  <head>
+    <title>my-rss - Personal Feed Collection</title>
+    <docs>http://www.opml.org/spec2</docs>
+  </head>
+  <body>
+    <!-- Feeds added one at a time, on purpose. Deliberately NOT seeded from
+         rss.opml.template: its Hacker News and Stack Overflow style firehoses
+         are exactly what this reader exists to get away from. -->
+    <outline text="Friends" title="Friends">
+      <outline text="jadi" title="jadi.net" type="rss"
+               xmlUrl="https://jadi.net/feed/"
+               htmlUrl="https://jadi.net/"
+               category="Friends"/>
+    </outline>
+
+    <outline text="Boardgames" title="Boardgames">
+      <outline text="BoardGameGeek Blog" title="BoardGameGeek Blog" type="rss"
+               xmlUrl="https://boardgamegeek.com/rss/blog/1"
+               htmlUrl="https://boardgamegeek.com/blog/1/boardgamegeek-blog"
+               category="Boardgames"/>
+    </outline>
+  </body>
+</opml>
