@@ -1,0 +1,180 @@
+/* Everforest Minimal Theme */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap");
+
+:root {
+    /* Light Everforest */
+    --bg: #fffefb;
+    --surface: #f4f1ed;
+    --text: #5c6a72;
+    --muted: #939ba3;
+    --accent: #8da101;
+    --border: #e8e5e0;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #2d353b;
+        --surface: #343f44;
+        --text: #d3c6aa;
+        --muted: #7a8478;
+        --accent: #a7c080;
+        --border: #4f585e;
+    }
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    font-family: "Inter", system-ui, sans-serif !important;
+    background: var(--bg) !important;
+    color: var(--text) !important;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container {
+    flex: 1;
+}
+
+.navbar {
+    background: var(--surface) !important;
+    border-bottom: 1px solid var(--border);
+}
+
+.navbar-brand {
+    color: var(--text) !important;
+    font-weight: 600 !important;
+}
+
+.nav-link {
+    color: var(--muted) !important;
+}
+
+.nav-link:hover {
+    color: var(--accent) !important;
+}
+
+.dropdown-menu {
+    background: var(--surface) !important;
+    border: 1px solid var(--border) !important;
+}
+
+.dropdown-item {
+    color: var(--muted) !important;
+}
+
+.dropdown-item:hover {
+    background: var(--bg) !important;
+    color: var(--accent) !important;
+}
+
+.nav-pills {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 0.25rem;
+}
+
+.nav-pills .nav-link {
+    color: var(--muted) !important;
+    background: transparent !important;
+    border-radius: 0.375rem !important;
+}
+
+.nav-pills .nav-link.active {
+    background: var(--accent) !important;
+    color: white !important;
+}
+
+.accordion-item {
+    background: var(--surface) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 0.5rem !important;
+    margin-bottom: 1rem;
+}
+
+.accordion-button {
+    background: transparent !important;
+    color: var(--text) !important;
+    border: none !important;
+    font-weight: 500 !important;
+}
+
+.accordion-button:not(.collapsed) {
+    background: var(--bg) !important;
+    color: var(--accent) !important;
+}
+
+.accordion-body {
+    background: var(--bg) !important;
+    border-top: 1px solid var(--border) !important;
+}
+
+.list-group-item {
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 1px solid var(--border) !important;
+}
+
+.list-group-item a {
+    color: var(--text) !important;
+    text-decoration: none !important;
+}
+
+.list-group-item a:hover {
+    color: var(--accent) !important;
+}
+
+.list-group-item small {
+    color: var(--muted) !important;
+}
+
+.btn-outline-primary {
+    color: var(--accent) !important;
+    border-color: var(--accent) !important;
+}
+
+.btn-outline-primary:hover {
+    background: var(--accent) !important;
+    color: white !important;
+}
+
+.badge.bg-primary {
+    background: var(--accent) !important;
+}
+
+footer {
+    background: var(--surface) !important;
+    border-top: 1px solid var(--border);
+    color: var(--muted) !important;
+}
+
+footer a {
+    color: var(--accent) !important;
+    text-decoration: none !important;
+}
+
+.text-muted {
+    color: var(--muted) !important;
+}
+
+.accordion-button::after {
+    margin-left: 1em;
+}
+
+/* Mobile optimization for New badges */
+@media (max-width: 767.98px) {
+    .badge.bg-primary {
+        width: 8px !important;
+        height: 8px !important;
+        border-radius: 50% !important;
+        font-size: 0 !important;
+        padding: 0 !important;
+        min-width: 8px !important;
+        display: inline-block !important;
+    }
+}

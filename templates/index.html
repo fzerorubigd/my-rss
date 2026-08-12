@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{{ site_data.title }}</title>
+        <meta name="description" content="{{ site_data.description }}" />
+        <meta name="generator" content="lovelyRSS v{{ site_data.version }}" />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+        />
+        <link rel="stylesheet" href="static/custom.css" />
+        <link
+            rel="alternate"
+            type="application/rss+xml"
+            title="All Feeds"
+            href="latest_feeds.xml"
+        />
+        <link
+            rel="alternate"
+            type="application/rss+xml"
+            title="Feed List"
+            href="feeds_rss.xml"
+        />
+        <link
+            rel="icon"
+            href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌟</text></svg>"
+        />
+        <script>
+            window.siteData = {{ site_data | tojson }};
+        </script>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg mb-4">
+            <div class="container">
+                <a class="navbar-brand" href="#">
+                    <span style="font-size: 30px; margin-right: 8px">🌟</span>
+                    {{ site_data.title }}
+                </a>
+                <button
+                    class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav"
+                    aria-controls="navbarNav"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+                >
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item dropdown">
+                            <a
+                                class="nav-link dropdown-toggle"
+                                href="#"
+                                id="exportDropdown"
+                                role="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                            >
+                                Exports
+                            </a>
+                            <ul
+                                class="dropdown-menu"
+                                aria-labelledby="exportDropdown"
+                            >
+                                <li>
+                                    <a
+                                        class="dropdown-item"
+                                        href="latest_rss.xml"
+                                        target="_blank"
+                                        >RSS (Latest Posts)</a
+                                    >
+                                </li>
+                                <li>
+                                    <a
+                                        class="dropdown-item"
+                                        href="latest_feeds.xml"
+                                        target="_blank"
+                                        >RSS (Feed List)</a
+                                    >
+                                </li>
+                                {% if site_data.opml_export_url %}
+                                <li><hr class="dropdown-divider" /></li>
+                                <li>
+                                    <a
+                                        class="dropdown-item"
+                                        href="{{ site_data.opml_export_url }}"
+                                        target="_blank"
+                                        >OPML (My Feeds)</a
+                                    >
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container">
+            <header class="mb-5">
+                <p class="lead" id="site-description">
+                    {{ site_data.description }}
+                </p>
+                <p class="text-muted">
+                    Last updated: <span id="updated-time"></span> | Next update
+                    in ~<span id="update-interval"></span> hours
+                </p>
+            </header>
+
+            <!-- All Feeds Section -->
+            <section id="all-feeds">
+                <h2 class="mb-4">All Feeds (<span id="total-feeds"></span>)</h2>
+
+                <div id="category-tabs-container">
+                    <!-- Category tabs will be injected here -->
+                </div>
+
+                <div class="tab-content" id="category-tabs-content">
+                    <!-- Feed content will be injected here -->
+                </div>
+            </section>
+        </div>
+
+        <footer class="text-center py-4 mt-5">
+            <p>
+                Generated by
+                <a
+                    href="https://github.com/pesarkhobeee/lovelyRSS"
+                    target="_blank"
+                    >LovelyRSS</a
+                >
+                v<span id="version">{{ site_data.version }}</span>
+            </p>
+        </footer>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            // Utility functions
+            function cleanHtml(html) {
+                if (!html) return "";
+                const doc = new DOMParser().parseFromString(html, "text/html");
+                return doc.body.textContent || "";
+            }
+
+            function truncateText(text, length) {
+                if (!text) return "";
+                if (text.length <= length) return text;
+                return text.substr(0, length) + "...";
+            }
+
+            function formatRelativeTime(dateString) {
+                if (!dateString) return "";
+                const date = new Date(dateString);
+                const now = new Date();
+                const seconds = Math.floor((now - date) / 1000);
+
+                let interval = seconds / 31536000;
+                if (interval > 1) return Math.floor(interval) + " years ago";
+                interval = seconds / 2592000;
+                if (interval > 1) return Math.floor(interval) + " months ago";
+                interval = seconds / 86400;
+                if (interval > 1) return Math.floor(interval) + " days ago";
+                interval = seconds / 3600;
+                if (interval > 1) return Math.floor(interval) + " hours ago";
+                interval = seconds / 60;
+                if (interval > 1) return Math.floor(interval) + " minutes ago";
+                return Math.floor(seconds) + " seconds ago";
+            }
+
+            // Data loading and rendering
+            document.addEventListener("DOMContentLoaded", () => {
+                if (window.siteData) {
+                    renderData(window.siteData);
+                } else {
+                    fetch("site_data.json")
+                        .then((response) => response.json())
+                        .then(renderData)
+                        .catch((error) => {
+                            console.error("Error loading site data:", error);
+                            const container =
+                                document.querySelector(".container");
+                            if (container) {
+                                container.innerHTML =
+                                    '<div class="alert alert-danger">Could not load site data. Please check the console for more information.</div>';
+                            }
+                        });
+                }
+            });
+
+            function renderData(data) {
+                // Populate header
+                document.getElementById("updated-time").textContent =
+                    data.updated_time;
+                document.getElementById("update-interval").textContent =
+                    data.update_interval_hours;
+                document.getElementById("total-feeds").textContent =
+                    data.total_feeds;
+
+                // Render feeds
+                const categoryTabsContainer = document.getElementById(
+                    "category-tabs-container",
+                );
+                const categoryTabsContent = document.getElementById(
+                    "category-tabs-content",
+                );
+
+                if (data.ui_settings.horizontal_menu) {
+                    const tabsUl = document.createElement("ul");
+                    tabsUl.className = "nav nav-pills mb-3";
+                    tabsUl.id = "category-tabs";
+                    tabsUl.role = "tablist";
+
+                    tabsUl.innerHTML = `
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button" role="tab" aria-controls="all" aria-selected="true">All</button>
+                    </li>
+                `;
+                    Object.keys(data.categories).forEach((category) => {
+                        tabsUl.innerHTML += `
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="${category.toLowerCase()}-tab" data-bs-toggle="tab" data-bs-target="#${category.toLowerCase().replace(/[^a-z0-9]/g, "")}" type="button" role="tab" aria-controls="${category.toLowerCase().replace(/[^a-z0-9]/g, "")}" aria-selected="false">${category}</button>
+                        </li>
+                    `;
+                    });
+                    categoryTabsContainer.appendChild(tabsUl);
+                }
+
+                // "All" tab content
+                let allFeedsHtml =
+                    '<div class="accordion" id="feeds-accordion-all">';
+                data.feeds.forEach((feed, index) => {
+                    allFeedsHtml += createFeedAccordionItem(
+                        feed,
+                        index,
+                        "all",
+                        data.entries_by_feed,
+                    );
+                });
+                allFeedsHtml += "</div>";
+
+                const allTabPane = document.createElement("div");
+                allTabPane.className = "tab-pane fade show active";
+                allTabPane.id = "all";
+                allTabPane.role = "tabpanel";
+                allTabPane.setAttribute("aria-labelledby", "all-tab");
+                allTabPane.innerHTML = allFeedsHtml;
+                categoryTabsContent.appendChild(allTabPane);
+
+                // Content for each category
+                Object.keys(data.categories).forEach((category) => {
+                    const categoryFeedList = data.categories[category];
+                    const categoryId = category
+                        .toLowerCase()
+                        .replace(/[^a-z0-9]/g, "");
+                    let categoryFeedsHtml = `<div class="accordion" id="feeds-accordion-${categoryId}">`;
+                    categoryFeedList.forEach((feed, index) => {
+                        categoryFeedsHtml += createFeedAccordionItem(
+                            feed,
+                            index,
+                            categoryId,
+                            data.entries_by_feed,
+                        );
+                    });
+                    categoryFeedsHtml += "</div>";
+
+                    const categoryTabPane = document.createElement("div");
+                    categoryTabPane.className = "tab-pane fade";
+                    categoryTabPane.id = categoryId;
+                    categoryTabPane.role = "tabpanel";
+                    categoryTabPane.setAttribute(
+                        "aria-labelledby",
+                        `${categoryId}-tab`,
+                    );
+                    categoryTabPane.innerHTML = categoryFeedsHtml;
+                    categoryTabsContent.appendChild(categoryTabPane);
+                });
+            }
+
+            function createFeedAccordionItem(
+                feed,
+                index,
+                category,
+                entries_by_feed,
+            ) {
+                const entries = entries_by_feed[feed.url] || [];
+                let entriesHtml = '<ul class="list-group">';
+                entries.forEach((entry) => {
+                    entriesHtml += `
+                    <li class="list-group-item">
+                        <a href="${entry.link}" target="_blank">${entry.title}</a>
+                        <small class="text-muted d-block">${formatRelativeTime(entry.published_parsed)}</small>
+                    </li>
+                `;
+                });
+                entriesHtml += "</ul>";
+
+                return `
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="heading-${index}-${category}">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${index}-${category}" aria-expanded="false" aria-controls="collapse-${index}-${category}">
+                            <img src="${feed.favicon_url}" alt="" width="16" height="16" class="me-2 rounded">
+                            ${feed.title}
+                            ${feed.has_recent_update ? '<span class="badge bg-primary ms-2">New</span>' : ""}
+                            <small class="text-muted ms-auto latest-update-text">
+                                Updated ${formatRelativeTime(feed.latest_post_parsed)}
+                            </small>
+                        </button>
+                    </h2>
+                    <div id="collapse-${index}-${category}" class="accordion-collapse collapse" aria-labelledby="heading-${index}-${category}" data-bs-parent="#feeds-accordion-${category}">
+                        <div class="accordion-body">
+                            <p>${feed.description || ""}</p>
+                            <p><a href="${feed.link}" target="_blank" class="btn btn-sm btn-outline-primary">Visit Website</a></p>
+                            ${entriesHtml}
+                        </div>
+                    </div>
+                </div>
+            `;
+            }
+        </script>
+    </body>
+</html>
