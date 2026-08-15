@@ -28,6 +28,13 @@
                xmlUrl="https://raw.githubusercontent.com/fzerorubigd/bgg-hotness/feed/feed.xml"
                htmlUrl="https://github.com/fzerorubigd/bgg-hotness"
                category="Boardgames"/>
+      <!-- Trade press rather than community chatter: industry news and analysis
+           (publisher finances, distribution, conventions). The channel title
+           element is empty in their feed, so the title here is set by hand. -->
+      <outline text="BoardGameWire" title="BoardGameWire" type="rss"
+               xmlUrl="https://boardgamewire.com/index.php/feed/"
+               htmlUrl="https://boardgamewire.com/"
+               category="Boardgames"/>
     </outline>
   </body>
 </opml>
