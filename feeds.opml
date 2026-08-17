@@ -20,12 +20,17 @@
                xmlUrl="https://boardgamegeek.com/rss/blog/1"
                htmlUrl="https://boardgamegeek.com/blog/1/boardgamegeek-blog"
                category="Boardgames"/>
-      <!-- Self-published: the bgg-hotness repo renders each aggregate run as an
-           Atom entry and commits it to its own `feed` branch. This reader only
-           subscribes to the raw URL, exactly as it would to any third-party
-           feed — nothing is written into this repo by that job. -->
+      <!-- Self-published: the bgg-hotness repo renders each aggregate run as
+           Atom entries and commits them to its own `feed` branch, which is
+           published through GitHub Pages. This reader only subscribes to the
+           URL, exactly as it would to any third-party feed — nothing is
+           written into this repo by that job.
+           Served over Pages rather than raw.githubusercontent because the raw
+           host RATE-LIMITS: it answered 429 on 2026-08-17, and a reader polling
+           on a schedule would drop entries silently. Pages also serves the file
+           as application/xml instead of text/plain. -->
       <outline text="BGG Hotness Aggregates" title="BGG Hotness Aggregates" type="rss"
-               xmlUrl="https://raw.githubusercontent.com/fzerorubigd/bgg-hotness/feed/feed.xml"
+               xmlUrl="https://fzero.rubi.gd/bgg-hotness/feed.xml"
                htmlUrl="https://github.com/fzerorubigd/bgg-hotness"
                category="Boardgames"/>
       <!-- Trade press rather than community chatter: industry news and analysis
